@@ -44,12 +44,12 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         val id = item?.itemId
         when (id) {
-            R.id.action_item1 -> Toast.makeText(applicationContext, "Вы создали уведомление", Toast.LENGTH_LONG).show()
-            R.id.action_item2 -> Toast.makeText(applicationContext, "Вы выбрали пункт 2", Toast.LENGTH_LONG).show()
-            R.id.action_item3 -> Toast.makeText(applicationContext, "Вы выбрали пункт 3", Toast.LENGTH_LONG).show()
-            R.id.action_settings -> {
+            R.id.action_item1 -> {
+                Toast.makeText(applicationContext, "Вы создали уведомление", Toast.LENGTH_LONG).show()
                 onSettingsButtonClick()
             }
+            R.id.action_item2 -> Toast.makeText(applicationContext, "Вы выбрали пункт 2", Toast.LENGTH_LONG).show()
+            R.id.action_item3 -> Toast.makeText(applicationContext, "Вы выбрали пункт 3", Toast.LENGTH_LONG).show()
         }
         return super.onOptionsItemSelected(item)
     }
