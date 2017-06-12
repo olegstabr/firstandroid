@@ -5,4 +5,7 @@
     <string name="action_item1">Уведомление</string>
     <string name="action_item2">Пункт2</string>
     <string name="action_item3">Пункт3</string>
+    <string name="warning">Warning предупреждение</string>
+    <string name="notifytitle">Напоминание</string>
+    <string name="notifytext">Здесь должен находиться текст напоминания :)</string>
 </resources>
