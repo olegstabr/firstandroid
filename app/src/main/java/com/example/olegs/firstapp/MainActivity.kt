@@ -1,5 +1,6 @@
 package com.example.olegs.firstapp
 
+import android.app.Activity
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -17,6 +18,11 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.Toast
 import android.media.RingtoneManager
+import android.os.AsyncTask
+import com.example.olegs.firstapp.Rest.Greeting
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.web.client.RestTemplate
+
 
 
 
@@ -50,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.action_item2 -> Toast.makeText(applicationContext, "Вы выбрали пункт 2", Toast.LENGTH_LONG).show()
             R.id.action_item3 -> Toast.makeText(applicationContext, "Вы выбрали пункт 3", Toast.LENGTH_LONG).show()
+            R.id.action_settings -> HttpRequestTask().execute()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -87,4 +94,39 @@ class MainActivity : AppCompatActivity() {
 
         notificationManager.notify(NOTIFY_ID, notification)
     }
+
+    override fun onStart() {
+        super.onStart()
+        val httpRequestTask = HttpRequestTask()
+        httpRequestTask.execute()
+        val str = "ID: " + httpRequestTask.id + " CONTENT: " + httpRequestTask.content
+        Toast.makeText(applicationContext, str, Toast.LENGTH_LONG).show()
+    }
+
+    inner class  HttpRequestTask : AsyncTask<Void, Void, Greeting>() {
+        var id = 0
+        var content: String? = null
+
+        override fun doInBackground(vararg params: Void?): Greeting? {
+            try {
+                val url = "http://rest-service.guides.spring.io/greeting"
+                val restTempalte = RestTemplate()
+                restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
+                val greeting = restTempalte.getForObject(url, Greeting::class.java)
+                return greeting
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            return null
+        }
+
+        override fun onPostExecute(greeting: Greeting?) {
+            id = greeting?.id as Int
+            content = greeting?.content
+            val str = "ID: " + id + " CONTENT: " + "\"" + content +"\"";
+            Toast.makeText(applicationContext, str, Toast.LENGTH_SHORT).show()
+        }
+    }
 }
+
+
