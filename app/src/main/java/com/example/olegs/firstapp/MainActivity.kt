@@ -19,8 +19,14 @@ import android.view.View.OnClickListener
 import android.widget.Toast
 import android.media.RingtoneManager
 import android.os.AsyncTask
+import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.Rest.Greeting
+import com.example.olegs.firstapp.Rest.User
+import org.springframework.http.HttpEntity
+import org.springframework.http.HttpHeaders
+import org.springframework.http.HttpMethod
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.util.support.Base64
 import org.springframework.web.client.RestTemplate
 
 
@@ -99,31 +105,35 @@ class MainActivity : AppCompatActivity() {
         super.onStart()
         val httpRequestTask = HttpRequestTask()
         httpRequestTask.execute()
-        val str = "ID: " + httpRequestTask.id + " CONTENT: " + httpRequestTask.content
-        Toast.makeText(applicationContext, str, Toast.LENGTH_LONG).show()
     }
 
-    inner class  HttpRequestTask : AsyncTask<Void, Void, Greeting>() {
-        var id = 0
-        var content: String? = null
-
-        override fun doInBackground(vararg params: Void?): Greeting? {
+    inner class  HttpRequestTask : AsyncTask<Void, Void, User>() {
+        override fun doInBackground(vararg params: Void?): User? {
             try {
-                val url = "http://rest-service.guides.spring.io/greeting"
-                val restTempalte = RestTemplate()
+//                val url = "http://rest-service.guides.spring.io/greeting"
+                val url = "http://192.168.0.104:8080/user/0"
+                val restTempalte = BasicAuthRestTemplate("bill", "abc123")
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val greeting = restTempalte.getForObject(url, Greeting::class.java)
-                return greeting
+                val user = restTempalte.getForObject(url, User::class.java)
+                return user
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return null
         }
 
-        override fun onPostExecute(greeting: Greeting?) {
-            id = greeting?.id as Int
-            content = greeting?.content
-            val str = "ID: " + id + " CONTENT: " + "\"" + content +"\"";
+//        override fun onPostExecute(greeting: Greeting?) {
+//            id = greeting?.id as Int
+//            content = greeting?.content
+//            val str = "ID: " + id + " CONTENT: " + "\"" + content +"\"";
+//            Toast.makeText(applicationContext, str, Toast.LENGTH_SHORT).show()
+//        }
+
+        override fun onPostExecute(user: User?) {
+            val id = user?.id as Int
+            val name = user?.name
+            val secondName = user?.secondName
+            val str = "ID: " + id + " | NAME: " + name + " | SECOND_NAME: " + secondName;
             Toast.makeText(applicationContext, str, Toast.LENGTH_SHORT).show()
         }
     }
