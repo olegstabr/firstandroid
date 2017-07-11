@@ -29,9 +29,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.util.support.Base64
 import org.springframework.web.client.RestTemplate
 
-
-
-
 class MainActivity : AppCompatActivity() {
     val NOTIFY_ID = 101
 
