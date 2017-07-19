@@ -5,19 +5,19 @@ package com.example.olegs.firstapp.Rest
  */
 class User{
     var id: Int = 0
-    var name: String = String()
-    var secondName: String = String()
+    var login: String = String()
+    var password: String = String()
 
     constructor()
 
-    constructor(name: String, secondName: String) {
-        this.name = name
-        this.secondName = secondName
+    constructor(login: String, password: String) {
+        this.login = login
+        this.password = password
     }
 
-    constructor(id: Int, name: String, secondName: String) {
+    constructor(id: Int, login: String, password: String) {
         this.id = id
-        this.name = name
-        this.secondName = secondName
+        this.login = login
+        this.password = password
     }
 }

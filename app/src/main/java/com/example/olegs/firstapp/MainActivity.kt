@@ -1,6 +1,5 @@
 package com.example.olegs.firstapp
 
-import android.app.Activity
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -20,14 +19,8 @@ import android.widget.Toast
 import android.media.RingtoneManager
 import android.os.AsyncTask
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
-import com.example.olegs.firstapp.Rest.Greeting
 import com.example.olegs.firstapp.Rest.User
-import org.springframework.http.HttpEntity
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpMethod
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
-import org.springframework.util.support.Base64
-import org.springframework.web.client.RestTemplate
 
 class MainActivity : AppCompatActivity() {
     val NOTIFY_ID = 101
@@ -128,8 +121,8 @@ class MainActivity : AppCompatActivity() {
 
         override fun onPostExecute(user: User?) {
             val id = user?.id as Int
-            val name = user?.name
-            val secondName = user?.secondName
+            val name = user?.login
+            val secondName = user?.password
             val str = "ID: " + id + " | NAME: " + name + " | SECOND_NAME: " + secondName;
             Toast.makeText(applicationContext, str, Toast.LENGTH_SHORT).show()
         }
