@@ -30,9 +30,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val actionButton = findViewById(R.id.main_floatbutton)
-        actionButton?.setOnClickListener(OnClickListener {
-            v -> v
-            val snackbar = Snackbar.make(v, "Own action", Snackbar.LENGTH_SHORT).setAction("OK", onSnackbarClickListener)
+        actionButton?.setOnClickListener({
+            v -> val snackbar = Snackbar.make(v, "Own action", Snackbar.LENGTH_SHORT).setAction("OK", onSnackbarClickListener)
             snackbar.show()
 
         })
@@ -101,7 +100,7 @@ class MainActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: Void?): User? {
             try {
 //                val url = "http://rest-service.guides.spring.io/greeting"
-                val url = "http://192.168.0.104:8080/user/0"
+                val url = "http://192.168.0.104:8080/user/1"
                 val restTempalte = BasicAuthRestTemplate("bill", "abc123")
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
                 val user = restTempalte.getForObject(url, User::class.java)

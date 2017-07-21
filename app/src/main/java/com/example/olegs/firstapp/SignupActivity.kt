@@ -1,5 +1,6 @@
 package com.example.olegs.firstapp
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -23,6 +24,7 @@ class SignupActivity : AppCompatActivity() {
         setContentView(R.layout.activity_signup)
 
         onCreateButtonClick()
+        onLoginLinkClick()
     }
 
     fun onCreateButtonClick() {
@@ -30,7 +32,17 @@ class SignupActivity : AppCompatActivity() {
         createButton.setOnClickListener({
             val sendLoginData = SendLoginData()
             sendLoginData.execute()
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
         })
+    }
+
+    fun onLoginLinkClick() {
+        val loginLink = findViewById(R.id.link_login)
+        loginLink.setOnClickListener {
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     inner class SendLoginData : AsyncTask<Void, Void, User>() {
@@ -55,6 +67,8 @@ class SignupActivity : AppCompatActivity() {
         override fun onPostExecute(user: User?) {
             loginText?.setText("", TextView.BufferType.EDITABLE)
             passwordText?.setText("", TextView.BufferType.EDITABLE)
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
             Toast.makeText(applicationContext, "Вы успешно зарегистрировались", Toast.LENGTH_SHORT).show()
         }
     }
