@@ -28,6 +28,30 @@ class LoginActivity : AppCompatActivity() {
         initUI()
     }
 
+    fun validate(): Boolean {
+        var valid = false
+        loginText = findViewById(R.id.input_login) as EditText
+        passwordText = findViewById(R.id.input_password) as EditText
+        val login = loginText?.text.toString()
+        val password = passwordText?.text.toString()
+
+        if (password.isEmpty() || password.length < 4) {
+            passwordText?.error = "Пароль должен содержать больше 4 символов"
+            valid = false
+        } else {
+            passwordText?.error = null
+        }
+
+        if (login.isEmpty() || login.length < 3) {
+            loginText?.error = "Логин должен содержать больше 3 символов"
+            valid = false
+        } else {
+            loginText?.error = null
+        }
+
+        return valid
+    }
+
     fun initUI() {
         val signupLink = findViewById(R.id.link_signup)
         signupLink.setOnClickListener {
@@ -37,17 +61,19 @@ class LoginActivity : AppCompatActivity() {
 
         val loginButton = findViewById(R.id.btn_login)
         loginButton.setOnClickListener {
-            val progressDialog = ProgressDialog(this)
-            progressDialog.isIndeterminate = true
-            progressDialog.setMessage("Авторизация...")
-            progressDialog.show()
+            if (validate()) {
+                val progressDialog = ProgressDialog(this)
+                progressDialog.isIndeterminate = true
+                progressDialog.setMessage("Авторизация...")
+                progressDialog.show()
 
-            val sendLoginData = SendLoginData()
-            sendLoginData.execute()
+                val sendLoginData = SendLoginData()
+                sendLoginData.execute()
 
-            android.os.Handler().postDelayed({
-                progressDialog.dismiss()
-            }, 3000)
+                android.os.Handler().postDelayed({
+                    progressDialog.dismiss()
+                }, 3000)
+            }
         }
     }
 

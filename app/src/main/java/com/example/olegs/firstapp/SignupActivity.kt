@@ -18,6 +18,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 
 class SignupActivity : AppCompatActivity() {
     var loginText: EditText? = null
+    var emailText: EditText? = null
     var passwordText: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,20 +29,55 @@ class SignupActivity : AppCompatActivity() {
         onLoginLinkClick()
     }
 
+    fun validate(): Boolean {
+        var valid = false
+        loginText = findViewById(R.id.input_login) as EditText
+        emailText = findViewById(R.id.input_email) as EditText
+        passwordText = findViewById(R.id.input_password) as EditText
+        val login = loginText?.text.toString()
+        val password = passwordText?.text.toString()
+        val email = emailText?.text.toString()
+
+        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            emailText?.error = "Введите корректный адрес"
+            valid = false
+        } else {
+            emailText?.error = null
+        }
+
+        if (password.isEmpty() || password.length < 4) {
+            passwordText?.error = "Пароль должен содержать больше 4 символов"
+            valid = false
+        } else {
+            passwordText?.error = null
+        }
+
+        if (login.isEmpty() || login.length < 3) {
+            loginText?.error = "Логин должен содержать больше 3 символов"
+            valid = false
+        } else {
+            loginText?.error = null
+        }
+
+        return valid
+    }
+
     fun onCreateButtonClick() {
         val createButton = findViewById(R.id.btn_signup)
         createButton.setOnClickListener({
-            val progressDialog = ProgressDialog(this)
-            progressDialog.isIndeterminate = true
-            progressDialog.setMessage("Регистрация...")
-            progressDialog.show()
+            if (validate()) {
+                val progressDialog = ProgressDialog(this)
+                progressDialog.isIndeterminate = true
+                progressDialog.setMessage("Регистрация...")
+                progressDialog.show()
 
-            val sendLoginData = SendLoginData()
-            sendLoginData.execute()
+                val sendLoginData = SendLoginData()
+                sendLoginData.execute()
 
-            android.os.Handler().postDelayed({
-                progressDialog.dismiss()
-            }, 3000)
+                android.os.Handler().postDelayed({
+                    progressDialog.dismiss()
+                }, 3000)
+            }
         })
     }
 
@@ -57,7 +93,7 @@ class SignupActivity : AppCompatActivity() {
         override fun doInBackground(vararg params: Void?): User? {
             try {
                 val url = "http://192.168.0.104:8080/user/"
-                loginText = findViewById(R.id.input_name) as EditText
+                loginText = findViewById(R.id.input_login) as EditText
                 passwordText = findViewById(R.id.input_password) as EditText
                 val login = loginText?.text.toString()
                 val password = passwordText?.text.toString()
