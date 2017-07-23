@@ -30,7 +30,7 @@ class SignupActivity : AppCompatActivity() {
     }
 
     fun validate(): Boolean {
-        var valid = false
+        var valid = true
         loginText = findViewById(R.id.input_login) as EditText
         emailText = findViewById(R.id.input_email) as EditText
         passwordText = findViewById(R.id.input_password) as EditText

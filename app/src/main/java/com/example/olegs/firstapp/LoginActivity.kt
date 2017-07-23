@@ -29,7 +29,7 @@ class LoginActivity : AppCompatActivity() {
     }
 
     fun validate(): Boolean {
-        var valid = false
+        var valid = true
         loginText = findViewById(R.id.input_login) as EditText
         passwordText = findViewById(R.id.input_password) as EditText
         val login = loginText?.text.toString()
