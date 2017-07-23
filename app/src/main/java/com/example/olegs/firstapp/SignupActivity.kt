@@ -1,5 +1,6 @@
 package com.example.olegs.firstapp
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -30,10 +31,17 @@ class SignupActivity : AppCompatActivity() {
     fun onCreateButtonClick() {
         val createButton = findViewById(R.id.btn_signup)
         createButton.setOnClickListener({
+            val progressDialog = ProgressDialog(this)
+            progressDialog.isIndeterminate = true
+            progressDialog.setMessage("Регистрация...")
+            progressDialog.show()
+
             val sendLoginData = SendLoginData()
             sendLoginData.execute()
-            val intent = Intent(applicationContext, LoginActivity::class.java)
-            startActivity(intent)
+
+            android.os.Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 3000)
         })
     }
 
@@ -67,7 +75,7 @@ class SignupActivity : AppCompatActivity() {
         override fun onPostExecute(user: User?) {
             loginText?.setText("", TextView.BufferType.EDITABLE)
             passwordText?.setText("", TextView.BufferType.EDITABLE)
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
             Toast.makeText(applicationContext, "Вы успешно зарегистрировались", Toast.LENGTH_SHORT).show()
         }

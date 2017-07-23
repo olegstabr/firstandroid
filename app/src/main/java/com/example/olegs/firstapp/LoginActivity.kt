@@ -1,5 +1,6 @@
 package com.example.olegs.firstapp
 
+import android.app.ProgressDialog
 import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
@@ -9,6 +10,7 @@ import android.widget.Toast
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.Rest.User
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 
 
@@ -35,13 +37,22 @@ class LoginActivity : AppCompatActivity() {
 
         val loginButton = findViewById(R.id.btn_login)
         loginButton.setOnClickListener {
+            val progressDialog = ProgressDialog(this)
+            progressDialog.isIndeterminate = true
+            progressDialog.setMessage("Авторизация...")
+            progressDialog.show()
+
             val sendLoginData = SendLoginData()
             sendLoginData.execute()
+
+            android.os.Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 3000)
         }
     }
 
-    inner class SendLoginData : AsyncTask<Void, Void, HttpStatus>() {
-        override fun doInBackground(vararg params: Void?): HttpStatus? {
+    inner class SendLoginData : AsyncTask<Void, Void, ResponseEntity<*>>() {
+        override fun doInBackground(vararg params: Void?): ResponseEntity<*>? {
             try {
                 val url = "http://192.168.0.104:8080/login"
                 loginText = findViewById(R.id.input_login) as EditText
@@ -51,7 +62,7 @@ class LoginActivity : AppCompatActivity() {
                 val restTempalte = BasicAuthRestTemplate("bill", "abc123")
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val response = restTempalte.postForObject(url, User(login, password), HttpStatus::class.java)
+                val response = restTempalte.postForEntity(url, User(login, password), ResponseEntity::class.java)
                 return response
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -59,8 +70,9 @@ class LoginActivity : AppCompatActivity() {
             return null
         }
 
-        override fun onPostExecute(response: HttpStatus?) {
-            if (response != HttpStatus.OK) {
+        override fun onPostExecute(response: ResponseEntity<*>?) {
+            if (response?.statusCode != HttpStatus.OK) {
+                Toast.makeText(applicationContext, "Логин или пароль введен неверно", Toast.LENGTH_SHORT).show()
                 return
             }
             val intent = Intent(applicationContext, MainActivity::class.java)
