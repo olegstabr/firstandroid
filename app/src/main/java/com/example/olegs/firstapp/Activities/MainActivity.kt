@@ -1,4 +1,4 @@
-package com.example.olegs.firstapp
+package com.example.olegs.firstapp.Activities
 
 import android.app.Notification
 import android.app.NotificationManager
@@ -19,6 +19,7 @@ import android.widget.Toast
 import android.media.RingtoneManager
 import android.os.AsyncTask
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
+import com.example.olegs.firstapp.R
 import com.example.olegs.firstapp.Rest.User
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 

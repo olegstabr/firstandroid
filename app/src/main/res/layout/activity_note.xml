@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="@dimen/margin_padding_small"
+    android:orientation="vertical">
+
+    <EditText
+        android:id="@+id/edit_text_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:hint="Название"
+        android:layout_marginBottom="@dimen/margin_padding_small"
+        android:singleLine="true"
+        android:textColor="#000000" />
+
+
+    <EditText
+        android:id="@+id/edit_text_note"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fadingEdge="vertical"
+        android:gravity="top"
+        android:hint="Введите текст заметки"
+        android:inputType="textMultiLine"
+        android:padding="@dimen/margin_padding_small"
+        android:scrollbars="vertical"
+        android:textSize="@dimen/text_size_normal" />
+
+</LinearLayout>

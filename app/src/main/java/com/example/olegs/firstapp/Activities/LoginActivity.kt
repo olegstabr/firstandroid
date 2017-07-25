@@ -1,4 +1,4 @@
-package com.example.olegs.firstapp
+package com.example.olegs.firstapp.Activities
 
 import android.app.ProgressDialog
 import android.content.Intent
@@ -6,44 +6,35 @@ import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.EditText
-import android.widget.TextView
 import android.widget.Toast
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
+import com.example.olegs.firstapp.R
 import com.example.olegs.firstapp.Rest.User
+import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 
+
 /**
- * Created by superadmin on 11.07.17.
+ * Created by superadmin on 21.07.17.
  */
 
-class SignupActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     var loginText: EditText? = null
-    var emailText: EditText? = null
     var passwordText: EditText? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_signup)
-
-        onCreateButtonClick()
-        onLoginLinkClick()
+        setContentView(R.layout.activity_login)
+        initUI()
     }
 
     fun validate(): Boolean {
         var valid = true
         loginText = findViewById(R.id.input_login) as EditText
-        emailText = findViewById(R.id.input_email) as EditText
         passwordText = findViewById(R.id.input_password) as EditText
         val login = loginText?.text.toString()
         val password = passwordText?.text.toString()
-        val email = emailText?.text.toString()
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            emailText?.error = "Введите корректный адрес"
-            valid = false
-        } else {
-            emailText?.error = null
-        }
 
         if (password.isEmpty() || password.length < 4) {
             passwordText?.error = "Пароль должен содержать больше 4 символов"
@@ -62,13 +53,19 @@ class SignupActivity : AppCompatActivity() {
         return valid
     }
 
-    fun onCreateButtonClick() {
-        val createButton = findViewById(R.id.btn_signup)
-        createButton.setOnClickListener({
+    fun initUI() {
+        val signupLink = findViewById(R.id.link_signup)
+        signupLink.setOnClickListener {
+            val intent = Intent(applicationContext, SignupActivity::class.java)
+            startActivity(intent)
+        }
+
+        val loginButton = findViewById(R.id.btn_login)
+        loginButton.setOnClickListener {
             if (validate()) {
                 val progressDialog = ProgressDialog(this)
                 progressDialog.isIndeterminate = true
-                progressDialog.setMessage("Регистрация...")
+                progressDialog.setMessage("Авторизация...")
                 progressDialog.show()
 
                 val sendLoginData = SendLoginData()
@@ -78,21 +75,13 @@ class SignupActivity : AppCompatActivity() {
                     progressDialog.dismiss()
                 }, 3000)
             }
-        })
-    }
-
-    fun onLoginLinkClick() {
-        val loginLink = findViewById(R.id.link_login)
-        loginLink.setOnClickListener {
-            val intent = Intent(applicationContext, LoginActivity::class.java)
-            startActivity(intent)
         }
     }
 
-    inner class SendLoginData : AsyncTask<Void, Void, User>() {
-        override fun doInBackground(vararg params: Void?): User? {
+    inner class SendLoginData : AsyncTask<Void, Void, ResponseEntity<*>>() {
+        override fun doInBackground(vararg params: Void?): ResponseEntity<*>? {
             try {
-                val url = "http://192.168.0.104:8080/user/"
+                val url = "http://192.168.0.104:8080/login"
                 loginText = findViewById(R.id.input_login) as EditText
                 passwordText = findViewById(R.id.input_password) as EditText
                 val login = loginText?.text.toString()
@@ -100,20 +89,22 @@ class SignupActivity : AppCompatActivity() {
                 val restTempalte = BasicAuthRestTemplate("bill", "abc123")
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val user = restTempalte.postForObject(url, User(login, password), User::class.java)
-                return user
+                val response = restTempalte.postForEntity(url, User(login, password), ResponseEntity::class.java)
+                return response
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             return null
         }
 
-        override fun onPostExecute(user: User?) {
-            loginText?.setText("", TextView.BufferType.EDITABLE)
-            passwordText?.setText("", TextView.BufferType.EDITABLE)
-            val intent = Intent(applicationContext, LoginActivity::class.java)
+        override fun onPostExecute(response: ResponseEntity<*>?) {
+            if (response?.statusCode != HttpStatus.OK) {
+                Toast.makeText(applicationContext, "Логин или пароль введен неверно", Toast.LENGTH_SHORT).show()
+                return
+            }
+            val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
-            Toast.makeText(applicationContext, "Вы успешно зарегистрировались", Toast.LENGTH_SHORT).show()
+            Toast.makeText(applicationContext, "Вы успешно авторизовались", Toast.LENGTH_SHORT).show()
         }
     }
 }
