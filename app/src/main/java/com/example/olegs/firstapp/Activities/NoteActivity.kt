@@ -66,7 +66,7 @@ class NoteActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(response: ResponseEntity<*>?) {
-            if (response?.statusCode != HttpStatus.CREATED) {
+            if (response?.statusCode == HttpStatus.CONFLICT) {
                 Toast.makeText(applicationContext, "Что-то пошло не так, заметка не сохранилась...", Toast.LENGTH_SHORT).show()
                 return
             }

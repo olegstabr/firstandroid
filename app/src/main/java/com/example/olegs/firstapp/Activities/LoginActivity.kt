@@ -63,14 +63,13 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById(R.id.btn_login)
         loginButton.setOnClickListener {
             if (validate()) {
-                val progressDialog = ProgressDialog(this)
+                val progressDialog: ProgressDialog = ProgressDialog(this)
                 progressDialog.isIndeterminate = true
                 progressDialog.setMessage("Авторизация...")
                 progressDialog.show()
 
                 val sendLoginData = SendLoginData()
                 sendLoginData.execute()
-
                 android.os.Handler().postDelayed({
                     progressDialog.dismiss()
                 }, 3000)
@@ -102,7 +101,8 @@ class LoginActivity : AppCompatActivity() {
                 Toast.makeText(applicationContext, "Логин или пароль введен неверно", Toast.LENGTH_SHORT).show()
                 return
             }
-            val intent = Intent(applicationContext, MainActivity::class.java)
+            val intent = Intent(applicationContext, NotesListActivity::class.java)
+            intent.putExtra("login", loginText?.text.toString())
             startActivity(intent)
             Toast.makeText(applicationContext, "Вы успешно авторизовались", Toast.LENGTH_SHORT).show()
         }

@@ -14,8 +14,10 @@ class Note {
     var id: Int = 0
     var userId: Int = 0
     var title: String = String()
-    var text: ByteArray
-    var createDate: Date
+    var text: ByteArray =  ByteArray(8192)
+    var createDate: Date = Date(System.currentTimeMillis())
+
+    constructor() {}
 
     constructor(userId: Int,  title: String, text: ByteArray, createDate: Date) {
         this.userId = userId
