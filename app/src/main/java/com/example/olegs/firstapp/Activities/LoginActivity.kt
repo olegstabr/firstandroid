@@ -22,6 +22,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 class LoginActivity : AppCompatActivity() {
     var loginText: EditText? = null
     var passwordText: EditText? = null
+    lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,16 +64,13 @@ class LoginActivity : AppCompatActivity() {
         val loginButton = findViewById(R.id.btn_login)
         loginButton.setOnClickListener {
             if (validate()) {
-                val progressDialog: ProgressDialog = ProgressDialog(this)
+                progressDialog = ProgressDialog(this)
                 progressDialog.isIndeterminate = true
                 progressDialog.setMessage("Авторизация...")
                 progressDialog.show()
 
                 val sendLoginData = SendLoginData()
                 sendLoginData.execute()
-                android.os.Handler().postDelayed({
-                    progressDialog.dismiss()
-                }, 3000)
             }
         }
     }
@@ -97,6 +95,9 @@ class LoginActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(response: ResponseEntity<*>?) {
+            android.os.Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 3000)
             if (response?.statusCode != HttpStatus.OK) {
                 Toast.makeText(applicationContext, "Логин или пароль введен неверно", Toast.LENGTH_SHORT).show()
                 return

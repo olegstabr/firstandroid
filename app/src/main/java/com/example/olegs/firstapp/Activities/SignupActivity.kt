@@ -21,6 +21,7 @@ class SignupActivity : AppCompatActivity() {
     var loginText: EditText? = null
     var emailText: EditText? = null
     var passwordText: EditText? = null
+    lateinit var progressDialog: ProgressDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +68,7 @@ class SignupActivity : AppCompatActivity() {
         val createButton = findViewById(R.id.btn_signup)
         createButton.setOnClickListener({
             if (validate()) {
-                val progressDialog = ProgressDialog(this)
+                progressDialog = ProgressDialog(this)
                 progressDialog.isIndeterminate = true
                 progressDialog.setMessage("Регистрация...")
                 progressDialog.show()
@@ -110,6 +111,9 @@ class SignupActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(user: User?) {
+            android.os.Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 3000)
             loginText?.setText("", TextView.BufferType.EDITABLE)
             passwordText?.setText("", TextView.BufferType.EDITABLE)
             val intent = Intent(applicationContext, LoginActivity::class.java)

@@ -49,7 +49,7 @@ class NoteActivity : AppCompatActivity() {
     inner class SaveNote : AsyncTask<Void, Void, ResponseEntity<*>>() {
         override fun doInBackground(vararg params: Void?): ResponseEntity<*>? {
             try {
-                val url = "http://192.168.0.104:8080/user/1/notee"
+                val url = "http://192.168.0.104:8080/user/1/note"
                 titleText = findViewById(R.id.edit_text_title) as EditText
                 textText = findViewById(R.id.edit_text_note) as EditText
                 val title = titleText?.text.toString()

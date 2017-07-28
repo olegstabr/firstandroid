@@ -1,8 +1,11 @@
 package com.example.olegs.firstapp.Activities
 
+import android.content.Intent
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
@@ -22,6 +25,28 @@ class NotesListActivity : AppCompatActivity() {
         setContentView(R.layout.activity_notes_list)
         val saveNote = SaveNote()
         saveNote.execute()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val saveNote = SaveNote()
+        saveNote.execute()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_note_list, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        val id = item?.itemId
+        when(id) {
+            R.id.action_add_note -> {
+                val intent = Intent(applicationContext, NoteActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     inner class SaveNote : AsyncTask<Void, Void, NotesList>() {

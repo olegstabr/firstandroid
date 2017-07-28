@@ -28,6 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
+                android:text="Steve"
                 android:hint="Логин" />
         </android.support.design.widget.TextInputLayout>
 
@@ -41,6 +42,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
+                android:text="Jobs"
                 android:hint="Пароль"/>
         </android.support.design.widget.TextInputLayout>
 
