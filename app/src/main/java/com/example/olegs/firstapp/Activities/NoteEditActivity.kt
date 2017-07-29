@@ -20,7 +20,11 @@ class NoteEditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note_edit)
         titleText = findViewById(R.id.edit_text_title) as EditText
+        textText = findViewById(R.id.edit_text_note) as EditText
         titleText.setText(intent.getStringExtra("title"), TextView.BufferType.EDITABLE)
+        val textBytes = intent.getByteArrayExtra("text")
+        val text = String(textBytes)
+        textText.setText(text, TextView.BufferType.EDITABLE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

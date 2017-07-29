@@ -11,8 +11,10 @@ import android.widget.ArrayAdapter
 import android.widget.ListView
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.R
+import com.example.olegs.firstapp.Rest.Note
 import com.example.olegs.firstapp.Rest.NotesList
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import java.util.*
 
 /**
  * Created by superadmin on 24.07.17.
@@ -53,8 +55,9 @@ class NotesListActivity : AppCompatActivity() {
         val listView = findViewById(R.id.list_view) as ListView
         listView.setOnItemClickListener { parent, view, position, id ->
             val intent = Intent(applicationContext, NoteEditActivity::class.java)
-            val item = listView.getItemAtPosition(position) as String
-            intent.putExtra("title", item)
+            val item = listView.getItemAtPosition(position) as Note
+            intent.putExtra("title", item.title)
+            intent.putExtra("text", item.text)
             startActivity(intent)
         }
     }
@@ -76,9 +79,8 @@ class NotesListActivity : AppCompatActivity() {
 
         override fun onPostExecute(response: NotesList?) {
             val listView = findViewById(R.id.list_view) as ListView
-            val noteNames= ArrayList<String>()
-            response?.userList?.forEach { noteNames.add(it.title) }
-            val adapter = ArrayAdapter<String>(this@NotesListActivity, android.R.layout.simple_list_item_1, noteNames)
+            val notes = ArrayList<Note>(response?.userList)
+            val adapter = ArrayAdapter<Note>(this@NotesListActivity, android.R.layout.simple_list_item_1, notes)
             listView?.adapter = adapter
         }
     }

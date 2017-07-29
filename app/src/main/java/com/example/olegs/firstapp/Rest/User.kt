@@ -3,7 +3,7 @@ package com.example.olegs.firstapp.Rest
 /**
  * Created by superadmin on 02.07.17.
  */
-class User{
+class User {
     var id: Int = 0
     var login: String = String()
     var password: String = String()

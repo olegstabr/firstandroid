@@ -33,4 +33,8 @@ class Note {
         this.text = text
         this.createDate = createDate
     }
+
+    override fun toString(): String {
+        return title
+    }
 }
