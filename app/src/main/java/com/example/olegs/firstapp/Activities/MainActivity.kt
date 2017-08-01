@@ -102,7 +102,7 @@ class MainActivity : AppCompatActivity() {
             try {
 //                val url = "http://rest-service.guides.spring.io/greeting"
                 val url = "http://192.168.0.104:8080/user/1"
-                val restTempalte = BasicAuthRestTemplate("bill", "abc123")
+                val restTempalte = BasicAuthRestTemplate.instance
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
                 val user = restTempalte.getForObject(url, User::class.java)
                 return user

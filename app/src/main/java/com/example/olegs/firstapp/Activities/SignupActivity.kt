@@ -99,7 +99,10 @@ class SignupActivity : AppCompatActivity() {
                 passwordText = findViewById(R.id.input_password) as EditText
                 val login = loginText?.text.toString()
                 val password = passwordText?.text.toString()
-                val restTempalte = BasicAuthRestTemplate("bill", "abc123")
+                BasicAuthRestTemplate.username = login
+                BasicAuthRestTemplate.password = password
+                val restTempalte = BasicAuthRestTemplate.instance
+                restTempalte.addAuthentication(login, password)
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
                 val user = restTempalte.postForObject(url, User(login, password), User::class.java)

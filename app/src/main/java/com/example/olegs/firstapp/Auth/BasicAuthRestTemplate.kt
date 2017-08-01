@@ -10,20 +10,30 @@ import java.util.*
  */
 
 class BasicAuthRestTemplate : RestTemplate {
-    var username = ""
-    var password = ""
 
-    constructor(username: String, password: String) {
-        this.username = username
-        this.password = password
-        addAuthentication()
-    }
+    private constructor()
 
-    fun addAuthentication() {
+//    private constructor(username: String, password: String) {
+//        addAuthentication(username, password)
+//    }
+
+    fun addAuthentication(username: String, password: String) {
         if (username.isEmpty()) {
             throw RuntimeException("Username is mandatory for Basic Auth");
         }
         val interceptors = Collections.singletonList(BasicAuthInterceptor(username, password))
         setRequestFactory(InterceptingClientHttpRequestFactory(requestFactory, interceptors as List<ClientHttpRequestInterceptor>?))
+    }
+
+    //
+    // Singleton
+    //
+
+    private object Holder { val INSTANCE = BasicAuthRestTemplate() }
+
+    companion object Factory {
+        var username = ""
+        var password = ""
+        val instance : BasicAuthRestTemplate by lazy { Holder.INSTANCE }
     }
 }

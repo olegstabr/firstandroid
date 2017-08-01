@@ -9,7 +9,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.R
-import com.example.olegs.firstapp.Rest.User
+import org.springframework.http.HttpMethod
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -83,10 +83,13 @@ class LoginActivity : AppCompatActivity() {
                 passwordText = findViewById(R.id.input_password) as EditText
                 val login = loginText?.text.toString()
                 val password = passwordText?.text.toString()
-                val restTempalte = BasicAuthRestTemplate("bill", "abc123")
+                BasicAuthRestTemplate.username = login
+                BasicAuthRestTemplate.password = password
+                val restTempalte = BasicAuthRestTemplate.instance
+                restTempalte.addAuthentication(login, password)
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val response = restTempalte.postForEntity(url, User(login, password), ResponseEntity::class.java)
+                val response = restTempalte.getForEntity(url, ResponseEntity::class.java)
                 return response
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -97,8 +100,8 @@ class LoginActivity : AppCompatActivity() {
         override fun onPostExecute(response: ResponseEntity<*>?) {
             android.os.Handler().postDelayed({
                 progressDialog.dismiss()
-            }, 3000)
-            if (response?.statusCode != HttpStatus.OK) {
+            }, 500)
+            if (response?.statusCode == HttpStatus.UNAUTHORIZED || response == null) {
                 Toast.makeText(applicationContext, "Логин или пароль введен неверно", Toast.LENGTH_SHORT).show()
                 return
             }
