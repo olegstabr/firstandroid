@@ -19,8 +19,7 @@ class Note {
 
     constructor()
 
-    constructor(userId: Int,  title: String, text: String, createDate: Date) {
-        this.userId = userId
+    constructor(title: String, text: String, createDate: Date) {
         this.title = title
         this.text = text
         this.createDate = createDate

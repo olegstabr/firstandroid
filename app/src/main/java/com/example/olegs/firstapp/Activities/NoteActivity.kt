@@ -1,11 +1,13 @@
 package com.example.olegs.firstapp.Activities
 
+import android.app.ProgressDialog
 import android.os.AsyncTask
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.R
@@ -22,9 +24,14 @@ import java.sql.Date
 class NoteActivity : AppCompatActivity() {
     lateinit var titleText: EditText
     lateinit var textText: EditText
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_note)
+        titleText = findViewById(R.id.edit_text_title) as EditText
+        textText = findViewById(R.id.edit_text_note) as EditText
+        titleText.setText(intent.getStringExtra("title"), TextView.BufferType.EDITABLE)
+        textText.setText(intent.getStringExtra("text"), TextView.BufferType.EDITABLE)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -45,17 +52,19 @@ class NoteActivity : AppCompatActivity() {
     }
 
     inner class SaveNote : AsyncTask<Void, Void, ResponseEntity<*>>() {
+        lateinit var progressDialog: ProgressDialog
+
         override fun doInBackground(vararg params: Void?): ResponseEntity<*>? {
             try {
                 val url = "http://192.168.0.104:8080/note"
-                titleText = findViewById(R.id.edit_text_title) as EditText
-                textText = findViewById(R.id.edit_text_note) as EditText
                 val title = titleText?.text.toString()
                 val text = textText?.text.toString()
                 val restTempalte = BasicAuthRestTemplate.instance
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val response = restTempalte.postForEntity(url, Note(0, 6, title, text, Date(System.currentTimeMillis())), ResponseEntity::class.java)
+                var note = Note(title, text, Date(System.currentTimeMillis()))
+                note.id = intent.getIntExtra("id", 0)
+                val response = restTempalte.postForEntity(url, note, ResponseEntity::class.java)
                 return response
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -64,11 +73,22 @@ class NoteActivity : AppCompatActivity() {
         }
 
         override fun onPostExecute(response: ResponseEntity<*>?) {
+            android.os.Handler().postDelayed({
+                progressDialog.dismiss()
+            }, 500)
+
             if (response?.statusCode == HttpStatus.CONFLICT) {
                 Toast.makeText(applicationContext, "Что-то пошло не так, заметка не сохранилась...", Toast.LENGTH_SHORT).show()
                 return
             }
             Toast.makeText(applicationContext, "Заметка успешно сохранена", Toast.LENGTH_SHORT).show()
+        }
+
+        override fun onPreExecute() {
+            progressDialog = ProgressDialog(this@NoteActivity)
+            progressDialog.isIndeterminate = true
+            progressDialog.setMessage("Сохранение...")
+            progressDialog.show()
         }
     }
 }

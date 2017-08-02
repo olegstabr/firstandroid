@@ -11,8 +11,12 @@ import android.widget.ListView
 import com.example.olegs.firstapp.Auth.BasicAuthRestTemplate
 import com.example.olegs.firstapp.R
 import com.example.olegs.firstapp.Rest.Note
+import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import kotlin.collections.ArrayList
+import com.example.olegs.firstapp.Rest.User
+
+
 
 /**
  * Created by superadmin on 24.07.17.
@@ -52,22 +56,23 @@ class NotesListActivity : AppCompatActivity() {
     fun onListViewItemClick() {
         val listView = findViewById(R.id.list_view) as ListView
         listView.setOnItemClickListener { parent, view, position, id ->
-            val intent = Intent(applicationContext, NoteEditActivity::class.java)
+            val intent = Intent(applicationContext, NoteActivity::class.java)
             val item = listView.getItemAtPosition(position) as Note
+            intent.putExtra("id", item.id)
             intent.putExtra("title", item.title)
             intent.putExtra("text", item.text)
             startActivity(intent)
         }
     }
 
-    inner class SaveNote : AsyncTask<Void, Void, List<*>>() {
-        override fun doInBackground(vararg params: Void?): List<*>? {
+    inner class SaveNote : AsyncTask<Void, Void, Array<Note>>() {
+        override fun doInBackground(vararg params: Void?): Array<Note>? {
             try {
                 val url = "http://192.168.0.104:8080/note"
                 val restTempalte = BasicAuthRestTemplate.instance
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
-                val response = restTempalte.getForObject(url, List::class.java)
+                val response = restTempalte.getForObject(url, Array<Note>::class.java)
                 return response
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -75,13 +80,13 @@ class NotesListActivity : AppCompatActivity() {
             return null
         }
 
-        override fun onPostExecute(response: List<*>?) {
+        override fun onPostExecute(response: Array<Note>?) {
             if (response == null) {
-                return;
+                return
             }
             try {
                 val listView = findViewById(R.id.list_view) as ListView
-                val adapter = ArrayAdapter<Note>(this@NotesListActivity, android.R.layout.simple_list_item_1, response as List<Note>)
+                val adapter = ArrayAdapter<Note>(this@NotesListActivity, android.R.layout.simple_list_item_1, response)
                 listView?.adapter = adapter
             } catch (e: Exception) {
                 e.message
