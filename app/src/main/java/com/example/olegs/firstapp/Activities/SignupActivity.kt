@@ -94,7 +94,7 @@ class SignupActivity : AppCompatActivity() {
     inner class SendLoginData : AsyncTask<Void, Void, User>() {
         override fun doInBackground(vararg params: Void?): User? {
             try {
-                val url = "http://192.168.0.104:8080/user/"
+                val url = "http://192.168.0.104:8080/user"
                 loginText = findViewById(R.id.input_login) as EditText
                 passwordText = findViewById(R.id.input_password) as EditText
                 val login = loginText?.text.toString()
@@ -102,7 +102,6 @@ class SignupActivity : AppCompatActivity() {
                 BasicAuthRestTemplate.username = login
                 BasicAuthRestTemplate.password = password
                 val restTempalte = BasicAuthRestTemplate.instance
-                restTempalte.addAuthentication(login, password)
 
                 restTempalte.messageConverters.add(MappingJackson2HttpMessageConverter())
                 val user = restTempalte.postForObject(url, User(login, password), User::class.java)
